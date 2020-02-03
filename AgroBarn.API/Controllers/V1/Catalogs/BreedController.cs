@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 namespace AgroBarn.API.Controllers.V1.Catalogs
 {
@@ -15,31 +16,34 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
     public class BreedController : ControllerBase
     {
         private readonly IAgroBarnSupervisor _agroBarnSupervisor;
+        private readonly IMapper _mapper;
 
         public BreedController(
+            IMapper mapper,
             IAgroBarnSupervisor agroBarnSupervisor
         )
         {
+            _mapper = mapper;
             _agroBarnSupervisor = agroBarnSupervisor;
         }
 
+        /// <summary>
+        /// Obtiene la lista de todas las razas registradas
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("api/v1/breeds")]
         public async Task<ActionResult<List<BreedResponse>>> GetAll()
         {
             List<BreedResult> result = await _agroBarnSupervisor.GetAllBreedAsync();
-            List<BreedResponse> breeds = new List<BreedResponse>();
-            foreach (var item in result)
-            {
-                breeds.Add(new BreedResponse
-                {
-                    Id = item.Id,
-                    Name = item.Name
-                });
-            }
-
-            return Ok(breeds);
+            List<BreedResponse> response = _mapper.Map<List<BreedResponse>>(result);
+            return Ok(response);
         }
 
+        /// <summary>
+        /// Obtiene solo una raza a través de su ID
+        /// </summary>
+        /// <param name="breedId"></param>
+        /// <returns></returns>
         [HttpGet("api/v1/breeds/{breedId}/id")]
         public async Task<ActionResult<BreedResponse>> GetById([FromRoute] int breedId)
         {
@@ -49,12 +53,15 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
                 return NotFound();
             }
 
-            BreedResponse breed = new BreedResponse();
-            breed.Id = result.Id;
-            breed.Name = result.Name;
+            BreedResponse breed = _mapper.Map<BreedResponse>(result);
             return Ok(breed);
         }
 
+        /// <summary>
+        /// Obtiene solo una raza a través de su Nombre
+        /// </summary>
+        /// <param name="breedName"></param>
+        /// <returns></returns>
         [HttpGet("api/v1/breeds/{breedName}/name")]
         public async Task<ActionResult<BreedResponse>> GetByName([FromRoute] string breedName)
         {
@@ -64,12 +71,15 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
                 return NotFound();
             }
 
-            BreedResponse breed = new BreedResponse();
-            breed.Id = result.Id;
-            breed.Name = result.Name;
+            BreedResponse breed = _mapper.Map<BreedResponse>(result);
             return Ok(breed);
         }
 
+        /// <summary>
+        /// Guarda una nueva raza
+        /// </summary>
+        /// <param name="newBreed"></param>
+        /// <returns></returns>
         [HttpPost("api/v1/breeds")]
         public async Task<ActionResult<BreedResponse>> Post([FromBody]BreedRequest newBreed)
         {
@@ -82,9 +92,7 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
             if (!result.Success)
                 return BadRequest();
 
-            BreedResponse breed = new BreedResponse();
-            breed.Id = result.Id;
-            breed.Name = result.Name;
+            BreedResponse breed = _mapper.Map<BreedResponse>(result);
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/api/v1/breeds/{breedId}/id".Replace("{breedId}", breed.Id.ToString());
@@ -92,6 +100,12 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
             return Created(locationUri, breed);
         }
 
+        /// <summary>
+        /// Actualiza el nombre de una raza, identificando el registro a través de su ID
+        /// </summary>
+        /// <param name="breedId"></param>
+        /// <param name="breed"></param>
+        /// <returns></returns>
         [HttpPatch("api/v1/breeds/{breedId}")]
         public async Task<ActionResult<BreedResponse>> Update([FromRoute] int breedId, [FromBody]BreedRequest breed)
         {
@@ -104,13 +118,15 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
             if (!result.Success)
                 return BadRequest();
 
-            BreedResponse response = new BreedResponse();
-            response.Id = result.Id;
-            response.Name = result.Name;
-
+            BreedResponse response = _mapper.Map<BreedResponse>(result);
             return Ok(response);
         }
 
+        /// <summary>
+        /// Cambia el estatus del registro a Baja
+        /// </summary>
+        /// <param name="breedId"></param>
+        /// <returns></returns>
         [HttpPatch("api/v1/breeds/{breedId}/low")]
         public async Task<ActionResult<BreedResponse>> Low([FromRoute] int breedId)
         {

@@ -12,123 +12,54 @@ namespace AgroBarn.Domain.Supervisor.V1
     {
         public async Task<List<BreedResult>> GetAllBreedAsync()
         {
-            List<BreedResult> breedsResult = new List<BreedResult>();
             List<BreedDto> breedsDto = await _breedRepository.GetAllAsync();
-            foreach (var item in breedsDto)
-            {
-                //TODO
-                //Conversion
-
-                breedsResult.Add(new BreedResult
-                {
-                    Id = item.Id,
-                    Name = item.Name
-                });
-            }
-
-            return breedsResult;
+            return breedsDto.Count > 0 ? _mapper.Map<List<BreedResult>>(breedsDto) : new List<BreedResult>();
         }
 
         public async Task<BreedResult> GetBreedByIdAsync(int breedId)
         {
             BreedDto breed = await _breedRepository.GetByIdAsync(breedId);
-            if (breed != null)
-            {
-                //TODO
-                //Conversion
-
-                return new BreedResult
-                {
-                    Id = breed.Id,
-                    Name = breed.Name,
-                    Success = true
-                };
-            }
-            else
-            {
-                //TODO
-                //Devolver mensaje
-                return new BreedResult
-                {
-                    Success = false
-                };
-            }
+            return breed != null ? BreedResponseOK(breed) : BreedResponseNotFound();
         }
 
         public async Task<BreedResult> GetBreedByNameAsync(string name)
         {
             BreedDto breed = await _breedRepository.GetByNameAsync(name);
-            if (breed != null)
-            {
-                //TODO
-                //Conversion
-
-                return new BreedResult
-                {
-                    Id = breed.Id,
-                    Name = breed.Name,
-                    Success = true
-                };
-            }
-            else
-            {
-                //TODO
-                //Devolver mensaje
-                return new BreedResult
-                {
-                    Success = false
-                };
-            }
+            return breed != null ? BreedResponseOK(breed) : BreedResponseNotFound();
         }
 
         public async Task<BreedResult> AddBreedAsync(BreedRequest newBreed, int userId)
         {
             try
             {
-                BreedDto breedExist = await _breedRepository.GetByNameAsync(newBreed.Name);
-                if (breedExist == null)
-                {
-                    //TODO
-                    //Conversion
-                    BreedDto breedDto = new BreedDto();
-                    breedDto.Name = newBreed.Name;
-                    breedDto.Status = 1;
-                    breedDto.UserCreate = userId;
-                    breedDto.DateCreate = DateTime.Now;
-                    breedDto = await _breedRepository.AddAsync(breedDto);
+                BreedDto breed = await _breedRepository.GetByNameAsync(newBreed.Name);
 
-                    //TODO
-                    //Conversion
-                    BreedResult response = new BreedResult();
-                    response.Id = breedDto.Id;
-                    response.Name = breedDto.Name;
-                    response.Success = true;
-
-                    return response;
-                }
-                else
+                if (breed != null)
                 {
-                    //TODO
-                    //Devolver mensaje de error
-                    return new BreedResult
-                    {
-                        Success = false
-                    };
+                    return BreedResponseConflict();
                 }
+
+                BreedDto breedDto = _mapper.Map<BreedDto>(newBreed);
+                breedDto.Status = 1;
+                breedDto.UserCreate = userId;
+                breedDto.DateCreate = DateTime.Now;
+                breedDto = await _breedRepository.AddAsync(breedDto);
+
+                BreedResult response = _mapper.Map<BreedResult>(breedDto);
+                response.Success = true;
+
+                return response;
             }
             catch (Exception)
             {
                 //TODO
                 //Devolver mensaje de error
                 //Guardar log error
-                return new BreedResult
-                {
-                    Success = false
-                };
+                return BreedResponseInternalError();
             }
         }
 
-        public async Task<BreedResult> UpdateBreedAsync(BreedRequest breed, int breedId,  int userId)
+        public async Task<BreedResult> UpdateBreedAsync(BreedRequest breed, int breedId, int userId)
         {
             try
             {
@@ -212,6 +143,46 @@ namespace AgroBarn.Domain.Supervisor.V1
                     Success = false
                 };
             }
+        }
+
+        private BreedResult BreedResponseOK(BreedDto breed)
+        {
+            BreedResult response = _mapper.Map<BreedResult>(breed);
+            response.Success = true;
+            return response;
+        }
+
+        private BreedResult BreedResponseNotFound()
+        {
+            return new BreedResult
+            {
+                Success = false
+            };
+
+            //TODO
+            //Manejo de mensajes
+        }
+
+        private BreedResult BreedResponseInternalError()
+        {
+            return new BreedResult
+            {
+                Success = false
+            };
+
+            //TODO
+            //Manejo de mensajes
+        }
+
+        private BreedResult BreedResponseConflict()
+        {
+            return new BreedResult
+            {
+                Success = false
+            };
+
+            //TODO
+            //Manejo de mensajes
         }
     }
 }

@@ -34,7 +34,9 @@ namespace AgroBarn.API
                 .ConfigureSupervisor()                      //Supervisor
                 .AddCorsConfiguration()                     //Cors
                 .AddConnectionProvider(Configuration);      //Connection
-                
+
+            services.ConfigureSwagger();                    //Swagger configurations
+            services.ConfigureAutoMapper();                 //AutoMapper
             
         }
 
@@ -53,6 +55,14 @@ namespace AgroBarn.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            //Swagger
+            app.UseSwagger();
+            app.UseSwaggerUI(config =>
+            {
+                config.SwaggerEndpoint("/swagger/v1/swagger.json", "AgroBarn Api v1");
+                config.RoutePrefix = string.Empty;     //Start Swagger UI in index page
             });
         }
     }

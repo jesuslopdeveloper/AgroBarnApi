@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AgroBarn.API</name>
+    </assembly>
+    <members>
+        <member name="M:AgroBarn.API.Controllers.V1.Catalogs.BreedController.GetAll">
+            <summary>
+            Obtiene la lista de todas las razas registradas
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AgroBarn.API.Controllers.V1.Catalogs.BreedController.GetById(System.Int32)">
+            <summary>
+            Obtiene solo una raza a través de su ID
+            </summary>
+            <param name="breedId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AgroBarn.API.Controllers.V1.Catalogs.BreedController.GetByName(System.String)">
+            <summary>
+            Obtiene solo una raza a través de su Nombre
+            </summary>
+            <param name="breedName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AgroBarn.API.Controllers.V1.Catalogs.BreedController.Post(AgroBarn.Domain.ApiModels.V1.Request.BreedRequest)">
+            <summary>
+            Guarda una nueva raza
+            </summary>
+            <param name="newBreed"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AgroBarn.API.Controllers.V1.Catalogs.BreedController.Update(System.Int32,AgroBarn.Domain.ApiModels.V1.Request.BreedRequest)">
+            <summary>
+            Actualiza el nombre de una raza, identificando el registro a través de su ID
+            </summary>
+            <param name="breedId"></param>
+            <param name="breed"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AgroBarn.API.Controllers.V1.Catalogs.BreedController.Low(System.Int32)">
+            <summary>
+            Cambia el estatus del registro a Baja
+            </summary>
+            <param name="breedId"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
