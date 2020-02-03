@@ -40,14 +40,18 @@ namespace AgroBarn.Domain.Supervisor.V1
                 return new BreedResult
                 {
                     Id = breed.Id,
-                    Name = breed.Name
+                    Name = breed.Name,
+                    Success = true
                 };
             }
             else
             {
                 //TODO
                 //Devolver mensaje
-                return null;
+                return new BreedResult
+                {
+                    Success = false
+                };
             }
         }
 
@@ -62,14 +66,18 @@ namespace AgroBarn.Domain.Supervisor.V1
                 return new BreedResult
                 {
                     Id = breed.Id,
-                    Name = breed.Name
+                    Name = breed.Name,
+                    Success = true
                 };
             }
             else
             {
                 //TODO
                 //Devolver mensaje
-                return null;
+                return new BreedResult
+                {
+                    Success = false
+                };
             }
         }
 
@@ -94,6 +102,7 @@ namespace AgroBarn.Domain.Supervisor.V1
                     BreedResult response = new BreedResult();
                     response.Id = breedDto.Id;
                     response.Name = breedDto.Name;
+                    response.Success = true;
 
                     return response;
                 }
@@ -101,7 +110,10 @@ namespace AgroBarn.Domain.Supervisor.V1
                 {
                     //TODO
                     //Devolver mensaje de error
-                    return null;
+                    return new BreedResult
+                    {
+                        Success = false
+                    };
                 }
             }
             catch (Exception)
@@ -109,7 +121,10 @@ namespace AgroBarn.Domain.Supervisor.V1
                 //TODO
                 //Devolver mensaje de error
                 //Guardar log error
-                return null;
+                return new BreedResult
+                {
+                    Success = false
+                };
             }
         }
 
@@ -118,7 +133,7 @@ namespace AgroBarn.Domain.Supervisor.V1
             try
             {
                 BreedDto breedDto = await _breedRepository.GetByIdAsync(breedId);
-                if (breedDto == null)
+                if (breedDto != null)
                 {
                     //TODO
                     //Conversion
@@ -133,6 +148,7 @@ namespace AgroBarn.Domain.Supervisor.V1
                     BreedResult response = new BreedResult();
                     response.Id = breedDto.Id;
                     response.Name = breedDto.Name;
+                    response.Success = true;
 
                     return response;
                 }
@@ -140,7 +156,10 @@ namespace AgroBarn.Domain.Supervisor.V1
                 {
                     //TODO
                     //Devolver mensaje de error
-                    return null;
+                    return new BreedResult
+                    {
+                        Success = false
+                    };
                 }
             }
             catch (Exception)
@@ -148,7 +167,10 @@ namespace AgroBarn.Domain.Supervisor.V1
                 //TODO
                 //Devolver mensaje de error
                 //Guardar log error
-                return null;
+                return new BreedResult
+                {
+                    Success = false
+                };
             }
         }
 
@@ -174,7 +196,10 @@ namespace AgroBarn.Domain.Supervisor.V1
                 {
                     //TODO
                     //Devolver mensaje de error
-                    return null;
+                    return new BreedResult
+                    {
+                        Success = false
+                    };
                 }
             }
             catch (Exception)
@@ -182,7 +207,10 @@ namespace AgroBarn.Domain.Supervisor.V1
                 //TODO
                 //Devolver mensaje de error
                 //Guardar log error
-                return null;
+                return new BreedResult
+                {
+                    Success = false
+                };
             }
         }
     }

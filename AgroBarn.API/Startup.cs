@@ -1,3 +1,5 @@
+using AgroBarn.API.Configurations;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +28,14 @@ namespace AgroBarn.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services
+                .ConfigureRepositories()                    //Services
+                .ConfigureSupervisor()                      //Supervisor
+                .AddCorsConfiguration()                     //Cors
+                .AddConnectionProvider(Configuration);      //Connection
+                
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,9 +47,7 @@ namespace AgroBarn.API
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
