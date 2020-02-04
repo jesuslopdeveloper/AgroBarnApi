@@ -2,6 +2,7 @@
 using AgroBarn.Domain.ApiModels.V1.Request;
 using AgroBarn.Domain.ApiModels.V1.Response;
 using AgroBarn.Domain.ApiModels.V1.Result;
+using AgroBarn.API.Contracts.V1;
 
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,7 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
         /// Obtiene la lista de todas las razas registradas
         /// </summary>
         /// <returns></returns>
-        [HttpGet("api/v1/breeds")]
+        [HttpGet(ApiRoutes.Breeds.GetAll)]
         public async Task<ActionResult<List<BreedResponse>>> GetAll()
         {
             List<BreedResult> result = await _agroBarnSupervisor.GetAllBreedAsync();
@@ -44,7 +45,7 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
         /// </summary>
         /// <param name="breedId"></param>
         /// <returns></returns>
-        [HttpGet("api/v1/breeds/{breedId}/id")]
+        [HttpGet(ApiRoutes.Breeds.GetById)]
         public async Task<ActionResult<BreedResponse>> GetById([FromRoute] int breedId)
         {
             BreedResult result = await _agroBarnSupervisor.GetBreedByIdAsync(breedId);
@@ -62,7 +63,7 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
         /// </summary>
         /// <param name="breedName"></param>
         /// <returns></returns>
-        [HttpGet("api/v1/breeds/{breedName}/name")]
+        [HttpGet(ApiRoutes.Breeds.GetByName)]
         public async Task<ActionResult<BreedResponse>> GetByName([FromRoute] string breedName)
         {
             BreedResult result = await _agroBarnSupervisor.GetBreedByNameAsync(breedName);
@@ -80,7 +81,7 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
         /// </summary>
         /// <param name="newBreed"></param>
         /// <returns></returns>
-        [HttpPost("api/v1/breeds")]
+        [HttpPost(ApiRoutes.Breeds.Create)]
         public async Task<ActionResult<BreedResponse>> Post([FromBody]BreedRequest newBreed)
         {
             if (newBreed == null)
@@ -95,7 +96,7 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
             BreedResponse breed = _mapper.Map<BreedResponse>(result);
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            var locationUri = baseUrl + "/api/v1/breeds/{breedId}/id".Replace("{breedId}", breed.Id.ToString());
+            var locationUri = baseUrl + "/" + ApiRoutes.Breeds.GetById.Replace("{breedId}", breed.Id.ToString());
 
             return Created(locationUri, breed);
         }
@@ -106,7 +107,7 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
         /// <param name="breedId"></param>
         /// <param name="breed"></param>
         /// <returns></returns>
-        [HttpPatch("api/v1/breeds/{breedId}")]
+        [HttpPatch(ApiRoutes.Breeds.Update)]
         public async Task<ActionResult<BreedResponse>> Update([FromRoute] int breedId, [FromBody]BreedRequest breed)
         {
             if (breed == null)
@@ -127,7 +128,7 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
         /// </summary>
         /// <param name="breedId"></param>
         /// <returns></returns>
-        [HttpPatch("api/v1/breeds/{breedId}/low")]
+        [HttpPatch(ApiRoutes.Breeds.Low)]
         public async Task<ActionResult<BreedResponse>> Low([FromRoute] int breedId)
         {
             int userId = 1;
