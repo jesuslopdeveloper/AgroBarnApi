@@ -1,7 +1,6 @@
 ﻿using AgroBarn.Domain.Entities;
 using AgroBarn.Domain.Repositories.V1;
 
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +16,7 @@ namespace AgroBarn.Data.Repositories.V1
             _context = context;
         }
 
-        private async Task<bool> BreedExists(int id) =>
+        private async Task<bool> BreedExist(int id) =>
             await _context.BreedDto.AnyAsync(x => x.Id == id);
 
         public async Task<List<BreedDto>> GetAllAsync()
@@ -44,7 +43,7 @@ namespace AgroBarn.Data.Repositories.V1
 
         public async Task<bool> UpdateAsync(BreedDto breed)
         {
-            if (!await BreedExists(breed.Id))
+            if (!await BreedExist(breed.Id))
                 return false;
 
             _context.BreedDto.Update(breed);

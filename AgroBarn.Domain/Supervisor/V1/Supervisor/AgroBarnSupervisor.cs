@@ -11,10 +11,12 @@ namespace AgroBarn.Domain.Supervisor.V1
 
         //Catalogs Repository
         private readonly IBreedRepository _breedRepository;
+        private readonly IMessageRepository _messageRepository;
 
         public AgroBarnSupervisor(
             IMapper mapper,
-            IBreedRepository breedRepository
+            IBreedRepository breedRepository,
+            IMessageRepository messageRepository
         )
         {
             //AutoMapper
@@ -22,6 +24,7 @@ namespace AgroBarn.Domain.Supervisor.V1
 
             //Catalog Breed
             _breedRepository = breedRepository;
-        }
+            _messageRepository = messageRepository;
+        }        
     }
 }

@@ -1,9 +1,8 @@
 ﻿using AgroBarn.Domain.Entities;
 using AgroBarn.Data.Configurations;
 
-using System;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+using System.Threading;
 
 namespace AgroBarn.Data
 {
@@ -18,21 +17,13 @@ namespace AgroBarn.Data
         {
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                //warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=localhost;Database=AgroBarn;User=sa;Password=siavilla;Trusted_Connection=True;");
-            }
-        }
-
         //-------------------------------------------------------------------------------------------------------------------------------------
         //Tables
 
         //Catalogs
         public virtual DbSet<BreedDto> BreedDto { get; set; }
         public virtual DbSet<ConceptionDto> ConceptionDto { get; set; }
+        public virtual DbSet<MessageDto> MessageDto { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -40,6 +31,7 @@ namespace AgroBarn.Data
             //Catalogs
             new BreedConfiguration(modelBuilder.Entity<BreedDto>());
             new ConceptionConfiguration(modelBuilder.Entity<ConceptionDto>());
+            new MessageConfiguration(modelBuilder.Entity<MessageDto>());
         }
     }
 }

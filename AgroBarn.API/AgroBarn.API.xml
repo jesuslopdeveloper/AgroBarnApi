@@ -12,7 +12,7 @@
         </member>
         <member name="M:AgroBarn.API.Controllers.V1.Catalogs.BreedController.GetById(System.Int32)">
             <summary>
-            Obtiene solo una raza a través de su ID
+            Obtiene una raza a través de su ID
             </summary>
             <param name="breedId"></param>
             <returns></returns>
@@ -44,6 +44,41 @@
             Cambia el estatus del registro a Baja
             </summary>
             <param name="breedId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AgroBarn.API.Controllers.V1.Catalogs.MessageController.GetAll">
+            <summary>
+            Obtiene la lista de todos los mensajes registrados
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AgroBarn.API.Controllers.V1.Catalogs.MessageController.GetById(System.Int32)">
+            <summary>
+            Obtiene un mensaje a través de su ID 
+            </summary>
+            <param name="messageId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AgroBarn.API.Controllers.V1.Catalogs.MessageController.GetByCode(System.String)">
+            <summary>
+            Obtiene un mensaje a través del código
+            </summary>
+            <param name="messageCode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AgroBarn.API.Controllers.V1.Catalogs.MessageController.Post(AgroBarn.Domain.ApiModels.V1.Request.MessageRequest)">
+            <summary>
+            Guarda un nuevo mensaje
+            </summary>
+            <param name="newMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AgroBarn.API.Controllers.V1.Catalogs.MessageController.Update(System.Int32,AgroBarn.Domain.ApiModels.V1.Request.MessageRequest)">
+            <summary>
+            Actualiza los datos del mensaje, identificando el registro a través de su ID
+            </summary>
+            <param name="messageId"></param>
+            <param name="message"></param>
             <returns></returns>
         </member>
     </members>

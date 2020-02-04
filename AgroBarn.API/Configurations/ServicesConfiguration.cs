@@ -1,6 +1,5 @@
 ﻿using AgroBarn.Domain.Supervisor.V1;
 using AgroBarn.Domain.Repositories.V1;
-using AgroBarn.Domain.ApiModels.V1.Request;
 using AgroBarn.Data.Repositories.V1;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +11,8 @@ namespace AgroBarn.API.Configurations
     {
         public static IServiceCollection ConfigureRepositories(this IServiceCollection services)
         {
+            //Message Repository
+            services.AddScoped<IMessageRepository, MessageRepository>();
             //Breed Repository
             services.AddScoped<IBreedRepository, BreedRepository>();
 

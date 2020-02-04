@@ -16,6 +16,11 @@ namespace AgroBarn.Domain.MappingProfiles
             CreateMap<BreedDto, BreedResult>();
             CreateMap<BreedResult, BreedResponse>();
 
+            //Catalog Message
+            CreateMap<MessageRequest, MessageDto>();
+            CreateMap<MessageDto, MessageResult>();
+            CreateMap<MessageResult, MessageResponse>();
+
             //Others TODO
         }
     }

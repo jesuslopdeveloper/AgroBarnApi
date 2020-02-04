@@ -19,5 +19,18 @@
 
             public const string Low = Base + "/breeds/{breedId}/low";
         }
+
+        public static class Messages
+        {
+            public const string GetAll = Base + "/messages";
+
+            public const string GetById = Base + "/messages/{messageId}/id";
+
+            public const string GetByCode = Base + "/messages/{messageCode}/code";
+
+            public const string Create = Base + "/messages";
+
+            public const string Update = Base + "/messages/{messageId}";
+        }
     }
 }

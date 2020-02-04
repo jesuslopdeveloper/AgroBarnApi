@@ -1,6 +1,7 @@
 ﻿using AgroBarn.Domain.Entities;
 using AgroBarn.Domain.ApiModels.V1.Request;
 using AgroBarn.Domain.ApiModels.V1.Result;
+using AgroBarn.Domain.ApiModels.V1.Response;
 
 using System;
 using System.Collections.Generic;
@@ -19,43 +20,39 @@ namespace AgroBarn.Domain.Supervisor.V1
         public async Task<BreedResult> GetBreedByIdAsync(int breedId)
         {
             BreedDto breed = await _breedRepository.GetByIdAsync(breedId);
-            return breed != null ? BreedResponseOK(breed) : BreedResponseNotFound();
+            return breed != null ? BreedResponseOK(breed) : await BreedResponseNotFound();
         }
 
         public async Task<BreedResult> GetBreedByNameAsync(string name)
         {
             BreedDto breed = await _breedRepository.GetByNameAsync(name);
-            return breed != null ? BreedResponseOK(breed) : BreedResponseNotFound();
+            return breed != null ? BreedResponseOK(breed) : await BreedResponseNotFound();
         }
 
         public async Task<BreedResult> AddBreedAsync(BreedRequest newBreed, int userId)
         {
             try
             {
-                BreedDto breed = await _breedRepository.GetByNameAsync(newBreed.Name);
+                if (newBreed == null)
+                    return await BreedResponseBadRequest();
 
-                if (breed != null)
-                {
-                    return BreedResponseConflict();
-                }
+                BreedDto breedExist = await _breedRepository.GetByNameAsync(newBreed.Name);
+
+                if (breedExist != null)
+                    return await BreedResponseDuplicate();
 
                 BreedDto breedDto = _mapper.Map<BreedDto>(newBreed);
                 breedDto.Status = 1;
                 breedDto.UserCreate = userId;
                 breedDto.DateCreate = DateTime.Now;
+
                 breedDto = await _breedRepository.AddAsync(breedDto);
-
-                BreedResult response = _mapper.Map<BreedResult>(breedDto);
-                response.Success = true;
-
-                return response;
+                return BreedResponseOK(breedDto);
             }
             catch (Exception)
             {
-                //TODO
-                //Devolver mensaje de error
-                //Guardar log error
-                return BreedResponseInternalError();
+                //TODO Log Error
+                return await BreedResponseInternalError();
             }
         }
 
@@ -63,45 +60,25 @@ namespace AgroBarn.Domain.Supervisor.V1
         {
             try
             {
+                if (breed == null)
+                    return await BreedResponseBadRequest();
+
                 BreedDto breedDto = await _breedRepository.GetByIdAsync(breedId);
-                if (breedDto != null)
-                {
-                    //TODO
-                    //Conversion
-                    breedDto.Name = breed.Name;
-                    breedDto.Status = 1;
-                    breedDto.UserModify = userId;
-                    breedDto.DateModify = DateTime.Now;
-                    await _breedRepository.UpdateAsync(breedDto);
+                if (breedDto == null)
+                    return await BreedResponseNotFound();
 
-                    //TODO
-                    //Conversion
-                    BreedResult response = new BreedResult();
-                    response.Id = breedDto.Id;
-                    response.Name = breedDto.Name;
-                    response.Success = true;
+                breedDto.Name = breed.Name;
+                breedDto.Status = 1;
+                breedDto.UserModify = userId;
+                breedDto.DateModify = DateTime.Now;
 
-                    return response;
-                }
-                else
-                {
-                    //TODO
-                    //Devolver mensaje de error
-                    return new BreedResult
-                    {
-                        Success = false
-                    };
-                }
+                await _breedRepository.UpdateAsync(breedDto);
+                return BreedResponseOK(breedDto);
             }
             catch (Exception)
             {
-                //TODO
-                //Devolver mensaje de error
-                //Guardar log error
-                return new BreedResult
-                {
-                    Success = false
-                };
+                //TODO Log Error
+                return await BreedResponseInternalError();
             }
         }
 
@@ -110,38 +87,21 @@ namespace AgroBarn.Domain.Supervisor.V1
             try
             {
                 BreedDto breedDto = await _breedRepository.GetByIdAsync(breedId);
-                if (breedDto != null)
-                {
-                    breedDto.Status = 0;
-                    breedDto.DateModify = DateTime.Now;
-                    breedDto.UserModify = userId;
 
-                    await _breedRepository.UpdateAsync(breedDto);
+                if (breedDto == null)
+                    return await BreedResponseNotFound();
 
-                    return new BreedResult
-                    {
-                        Success = true
-                    };
-                }
-                else
-                {
-                    //TODO
-                    //Devolver mensaje de error
-                    return new BreedResult
-                    {
-                        Success = false
-                    };
-                }
+                breedDto.Status = 0;
+                breedDto.DateModify = DateTime.Now;
+                breedDto.UserModify = userId;
+
+                await _breedRepository.UpdateAsync(breedDto);
+                return BreedResponseOK(breedDto);
             }
             catch (Exception)
             {
-                //TODO
-                //Devolver mensaje de error
-                //Guardar log error
-                return new BreedResult
-                {
-                    Success = false
-                };
+                //TODO Log Error
+                return await BreedResponseInternalError();
             }
         }
 
@@ -152,37 +112,76 @@ namespace AgroBarn.Domain.Supervisor.V1
             return response;
         }
 
-        private BreedResult BreedResponseNotFound()
+        private async Task<BreedResult> BreedResponseBadRequest()
         {
+            MessageDto message = await _messageRepository.GetByCodeAsync("bad-request");
             return new BreedResult
             {
-                Success = false
+                Success = false,
+                CodeError = 400,
+                Errors = new List<ErrorResponse>
+                {
+                    new ErrorResponse
+                    {
+                        Code = message.Code,
+                        Message = message.Description
+                    }
+                }
             };
-
-            //TODO
-            //Manejo de mensajes
         }
 
-        private BreedResult BreedResponseInternalError()
+        private async Task<BreedResult> BreedResponseNotFound()
         {
+            MessageDto message = await _messageRepository.GetByCodeAsync("not-found");
             return new BreedResult
             {
-                Success = false
+                Success = false,
+                CodeError = 404,
+                Errors = new List<ErrorResponse>
+                {
+                    new ErrorResponse
+                    {
+                        Code = message.Code,
+                        Message = message.Description
+                    }
+                }
             };
-
-            //TODO
-            //Manejo de mensajes
         }
 
-        private BreedResult BreedResponseConflict()
+        private async Task<BreedResult> BreedResponseDuplicate()
         {
+            MessageDto message = await _messageRepository.GetByCodeAsync("duplicate");
             return new BreedResult
             {
-                Success = false
+                Success = false,
+                CodeError = 409,
+                Errors = new List<ErrorResponse>
+                {
+                    new ErrorResponse
+                    {
+                        Code = message.Code,
+                        Message = message.Description
+                    }
+                }
             };
+        }
 
-            //TODO
-            //Manejo de mensajes
+        private async Task<BreedResult> BreedResponseInternalError()
+        {
+            MessageDto message = await _messageRepository.GetByCodeAsync("internal-server-error");
+            return new BreedResult
+            {
+                Success = false,
+                CodeError = 500,
+                Errors = new List<ErrorResponse>
+                {
+                    new ErrorResponse
+                    {
+                        Code = message.Code,
+                        Message = message.Description
+                    }
+                }
+            };
         }
     }
 }

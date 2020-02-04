@@ -19,7 +19,7 @@ namespace AgroBarn.API.Configurations
                             "Server=localhost;Database=AgroBarn;User=sa;Password=siavilla;Trusted_Connection=True;Application Name=AgroBarnApi";
             }
 
-            services.AddDbContext<AgroBarnContext>(options => options.UseSqlServer(connection));
+            services.AddDbContext<AgroBarnContext>(options => options.UseSqlServer(connection, b => b.MigrationsAssembly("AgroBarn.Data")));
 
             return services;
         }

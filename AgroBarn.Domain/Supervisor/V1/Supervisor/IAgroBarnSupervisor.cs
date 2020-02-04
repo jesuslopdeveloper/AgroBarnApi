@@ -11,7 +11,7 @@ namespace AgroBarn.Domain.Supervisor.V1
     {
         //---------------------------------------------------------------------------------------------------------------------------------------------
         //Catalogs
-        //Methods Entity Label
+        //Methods Entity Breed
         Task<List<BreedResult>> GetAllBreedAsync();
 
         Task<BreedResult> GetBreedByIdAsync(int breedId);
@@ -23,5 +23,18 @@ namespace AgroBarn.Domain.Supervisor.V1
         Task<BreedResult> UpdateBreedAsync(BreedRequest breed, int breedId, int userId);
 
         Task<BreedResult> LowBreedAsync(int breedId, int userId);
+
+        //---------------------------------------------------------------------------------------------------------------------------------------------
+        //Catalogs
+        //Methods Entity Breed
+        Task<List<MessageResult>> GetAllMessageAsync();
+
+        Task<MessageResult> GetMessageByIdAsync(int messageId);
+
+        Task<MessageResult> GetMessageByCodeAsync(string code);
+
+        Task<MessageResult> AddMessageAsync(MessageRequest newMessage, int userId);
+
+        Task<MessageResult> UpdateMessageAsync(MessageRequest message, int messageId, int userId);        
     }
 }

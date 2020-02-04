@@ -4,7 +4,6 @@ using AgroBarn.Domain.ApiModels.V1.Response;
 using AgroBarn.Domain.ApiModels.V1.Result;
 using AgroBarn.API.Contracts.V1;
 
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -41,7 +40,7 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
         }
 
         /// <summary>
-        /// Obtiene solo una raza a través de su ID
+        /// Obtiene una raza a través de su ID
         /// </summary>
         /// <param name="breedId"></param>
         /// <returns></returns>
@@ -50,9 +49,7 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
         {
             BreedResult result = await _agroBarnSupervisor.GetBreedByIdAsync(breedId);
             if (!result.Success)
-            {
-                return NotFound();
-            }
+                return ResponseErrorCode(result);
 
             BreedResponse breed = _mapper.Map<BreedResponse>(result);
             return Ok(breed);
@@ -68,9 +65,7 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
         {
             BreedResult result = await _agroBarnSupervisor.GetBreedByNameAsync(breedName);
             if (!result.Success)
-            {
-                return NotFound();
-            }
+                return ResponseErrorCode(result);
 
             BreedResponse breed = _mapper.Map<BreedResponse>(result);
             return Ok(breed);
@@ -84,17 +79,13 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
         [HttpPost(ApiRoutes.Breeds.Create)]
         public async Task<ActionResult<BreedResponse>> Post([FromBody]BreedRequest newBreed)
         {
-            if (newBreed == null)
-                return BadRequest();
-
             int userId = 1;
             BreedResult result = await _agroBarnSupervisor.AddBreedAsync(newBreed, userId);
 
             if (!result.Success)
-                return BadRequest();
+                return ResponseErrorCode(result);
 
             BreedResponse breed = _mapper.Map<BreedResponse>(result);
-
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + ApiRoutes.Breeds.GetById.Replace("{breedId}", breed.Id.ToString());
 
@@ -110,14 +101,11 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
         [HttpPatch(ApiRoutes.Breeds.Update)]
         public async Task<ActionResult<BreedResponse>> Update([FromRoute] int breedId, [FromBody]BreedRequest breed)
         {
-            if (breed == null)
-                return BadRequest();
-
             int userId = 1;
             BreedResult result = await _agroBarnSupervisor.UpdateBreedAsync(breed, breedId, userId);
 
             if (!result.Success)
-                return BadRequest();
+                return ResponseErrorCode(result);
 
             BreedResponse response = _mapper.Map<BreedResponse>(result);
             return Ok(response);
@@ -135,9 +123,41 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
             BreedResult result = await _agroBarnSupervisor.LowBreedAsync(breedId, userId);
 
             if (!result.Success)
-                return BadRequest();
+                return ResponseErrorCode(result);
 
             return NoContent();
+        }
+
+        private ActionResult ResponseErrorCode(BreedResult response)
+        {
+            switch (response.CodeError)
+            {
+                case 400:
+                    return BadRequest(new ErrorsResponse
+                    {
+                        Errors = response.Errors
+                    });
+                case 404:
+                    return NotFound(new ErrorsResponse
+                    {
+                        Errors = response.Errors
+                    });
+                case 409:
+                    return Conflict(new ErrorsResponse
+                    {
+                        Errors = response.Errors
+                    });
+                case 500:
+                    return StatusCode(500, new ErrorsResponse
+                    {
+                        Errors = response.Errors
+                    });
+                default:
+                    return StatusCode(500, new ErrorsResponse
+                    {
+                        Errors = response.Errors
+                    });
+            }
         }
     }
 }
