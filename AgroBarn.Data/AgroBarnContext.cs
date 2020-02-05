@@ -2,11 +2,11 @@
 using AgroBarn.Data.Configurations;
 
 using Microsoft.EntityFrameworkCore;
-using System.Threading;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace AgroBarn.Data
 {
-    public partial class AgroBarnContext : DbContext
+    public partial class AgroBarnContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
     {
         public AgroBarnContext()
         {
@@ -19,6 +19,8 @@ namespace AgroBarn.Data
 
         //-------------------------------------------------------------------------------------------------------------------------------------
         //Tables
+        //Identity
+        public virtual DbSet<PeopleDto> PeopleDto { get; set; }
 
         //Catalogs
         public virtual DbSet<BreedDto> BreedDto { get; set; }
@@ -27,7 +29,14 @@ namespace AgroBarn.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //Enable migration Identity tables
+            base.OnModelCreating(modelBuilder);
+
             //Tables configuration
+            //Identity
+            new ApplicationRoleConfiguration(modelBuilder.Entity<ApplicationRole>());
+            new PeopleConfiguration(modelBuilder.Entity<PeopleDto>());
+
             //Catalogs
             new BreedConfiguration(modelBuilder.Entity<BreedDto>());
             new ConceptionConfiguration(modelBuilder.Entity<ConceptionDto>());

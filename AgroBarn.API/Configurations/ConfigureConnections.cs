@@ -1,5 +1,7 @@
 ﻿using AgroBarn.Data;
+using AgroBarn.Domain.Entities;
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +22,10 @@ namespace AgroBarn.API.Configurations
             }
 
             services.AddDbContext<AgroBarnContext>(options => options.UseSqlServer(connection, b => b.MigrationsAssembly("AgroBarn.Data")));
+
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
+                .AddEntityFrameworkStores<AgroBarnContext>()
+                .AddDefaultTokenProviders();
 
             return services;
         }

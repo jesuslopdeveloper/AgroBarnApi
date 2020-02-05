@@ -7,6 +7,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20200131194823_InitialCreate.cs" />
     <Compile Remove="Migrations\20200131194823_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20200205220951_AddIdentityTables.cs" />
+    <Compile Remove="Migrations\20200205220951_AddIdentityTables.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -14,6 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
