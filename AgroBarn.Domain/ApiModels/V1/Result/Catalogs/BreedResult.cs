@@ -13,6 +13,6 @@ namespace AgroBarn.Domain.ApiModels.V1.Result
 
         public int CodeError { get; set; }
 
-        public List<ErrorResponse> Errors { get; set; }
+        public List<ErrorModel> Errors { get; set; }
     }
 }

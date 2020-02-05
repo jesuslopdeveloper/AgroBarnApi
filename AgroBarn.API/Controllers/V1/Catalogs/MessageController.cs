@@ -116,27 +116,27 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
             switch (response.CodeError)
             {
                 case 400:
-                    return BadRequest(new ErrorsResponse
+                    return BadRequest(new ErrorResponse
                     {
                         Errors = response.Errors
                     });
                 case 404:
-                    return NotFound(new ErrorsResponse
+                    return NotFound(new ErrorResponse
                     {
                         Errors = response.Errors
                     });
                 case 409:
-                    return Conflict(new ErrorsResponse
+                    return Conflict(new ErrorResponse
                     {
                         Errors = response.Errors
                     });
                 case 500:
-                    return StatusCode(500, new ErrorsResponse
+                    return StatusCode(500, new ErrorResponse
                     {
                         Errors = response.Errors
                     });
                 default:
-                    return StatusCode(500, new ErrorsResponse
+                    return StatusCode(500, new ErrorResponse
                     {
                         Errors = response.Errors
                     });

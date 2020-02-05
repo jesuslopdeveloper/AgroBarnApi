@@ -77,7 +77,7 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
         /// <param name="newBreed"></param>
         /// <returns></returns>
         [HttpPost(ApiRoutes.Breeds.Create)]
-        public async Task<ActionResult<BreedResponse>> Post([FromBody]BreedRequest newBreed)
+        public async Task<ActionResult<BreedResponse>> Post([FromBody] BreedRequest newBreed)
         {
             int userId = 1;
             BreedResult result = await _agroBarnSupervisor.AddBreedAsync(newBreed, userId);
@@ -99,7 +99,7 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
         /// <param name="breed"></param>
         /// <returns></returns>
         [HttpPatch(ApiRoutes.Breeds.Update)]
-        public async Task<ActionResult<BreedResponse>> Update([FromRoute] int breedId, [FromBody]BreedRequest breed)
+        public async Task<ActionResult<BreedResponse>> Update([FromRoute] int breedId, [FromBody] BreedRequest breed)
         {
             int userId = 1;
             BreedResult result = await _agroBarnSupervisor.UpdateBreedAsync(breed, breedId, userId);
@@ -133,27 +133,27 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
             switch (response.CodeError)
             {
                 case 400:
-                    return BadRequest(new ErrorsResponse
+                    return BadRequest(new ErrorResponse
                     {
                         Errors = response.Errors
                     });
                 case 404:
-                    return NotFound(new ErrorsResponse
+                    return NotFound(new ErrorResponse
                     {
                         Errors = response.Errors
                     });
                 case 409:
-                    return Conflict(new ErrorsResponse
+                    return Conflict(new ErrorResponse
                     {
                         Errors = response.Errors
                     });
                 case 500:
-                    return StatusCode(500, new ErrorsResponse
+                    return StatusCode(500, new ErrorResponse
                     {
                         Errors = response.Errors
                     });
                 default:
-                    return StatusCode(500, new ErrorsResponse
+                    return StatusCode(500, new ErrorResponse
                     {
                         Errors = response.Errors
                     });

@@ -33,9 +33,6 @@ namespace AgroBarn.Domain.Supervisor.V1
         {
             try
             {
-                if (newMessage == null)
-                    return await MessageResponseBadRequest();
-
                 MessageDto menssageExist = await _messageRepository.GetByCodeAsync(newMessage.Code);
 
                 if (menssageExist != null)
@@ -60,9 +57,6 @@ namespace AgroBarn.Domain.Supervisor.V1
         {
             try
             {
-                if (message == null)
-                    return await MessageResponseBadRequest();
-
                 MessageDto messageDto = await _messageRepository.GetByIdAsync(messageId);
                 if (messageDto == null)
                     return await MessageResponseNotFound();
@@ -90,24 +84,6 @@ namespace AgroBarn.Domain.Supervisor.V1
             return response;
         }
 
-        private async Task<MessageResult> MessageResponseBadRequest()
-        {
-            MessageDto message = await _messageRepository.GetByCodeAsync("bad-request");
-            return new MessageResult
-            {
-                Success = false,
-                CodeError = 400,
-                Errors = new List<ErrorResponse>
-                {
-                    new ErrorResponse
-                    {
-                        Code = message.Code,
-                        Message = message.Description
-                    }
-                }
-            };
-        }
-
         private async Task<MessageResult> MessageResponseNotFound()
         {
             MessageDto message = await _messageRepository.GetByCodeAsync("not-found");
@@ -115,9 +91,9 @@ namespace AgroBarn.Domain.Supervisor.V1
             {
                 Success = false,
                 CodeError = 404,
-                Errors = new List<ErrorResponse>
+                Errors = new List<ErrorModel>
                 {
-                    new ErrorResponse
+                    new ErrorModel
                     {
                         Code = message.Code,
                         Message = message.Description
@@ -133,9 +109,9 @@ namespace AgroBarn.Domain.Supervisor.V1
             {
                 Success = false,
                 CodeError = 409,
-                Errors = new List<ErrorResponse>
+                Errors = new List<ErrorModel>
                 {
-                    new ErrorResponse
+                    new ErrorModel
                     {
                         Code = message.Code,
                         Message = message.Description
@@ -151,9 +127,9 @@ namespace AgroBarn.Domain.Supervisor.V1
             {
                 Success = false,
                 CodeError = 500,
-                Errors = new List<ErrorResponse>
+                Errors = new List<ErrorModel>
                 {
-                    new ErrorResponse
+                    new ErrorModel
                     {
                         Code = message.Code,
                         Message = message.Description
