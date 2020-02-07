@@ -3,15 +3,19 @@ using AgroBarn.Domain.ApiModels.V1.Request;
 using AgroBarn.Domain.ApiModels.V1.Response;
 using AgroBarn.Domain.ApiModels.V1.Result;
 using AgroBarn.API.Contracts.V1;
+using AgroBarn.API.Extensions;
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace AgroBarn.API.Controllers.V1.Catalogs
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class BreedController : ControllerBase
     {
@@ -79,7 +83,7 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
         [HttpPost(ApiRoutes.Breeds.Create)]
         public async Task<ActionResult<BreedResponse>> Post([FromBody] BreedRequest newBreed)
         {
-            int userId = 1;
+            int userId = int.Parse(HttpContext.GetUserId());
             BreedResult result = await _agroBarnSupervisor.AddBreedAsync(newBreed, userId);
 
             if (!result.Success)
@@ -101,7 +105,7 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
         [HttpPatch(ApiRoutes.Breeds.Update)]
         public async Task<ActionResult<BreedResponse>> Update([FromRoute] int breedId, [FromBody] BreedRequest breed)
         {
-            int userId = 1;
+            int userId = int.Parse(HttpContext.GetUserId());
             BreedResult result = await _agroBarnSupervisor.UpdateBreedAsync(breed, breedId, userId);
 
             if (!result.Success)
@@ -119,7 +123,7 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
         [HttpPatch(ApiRoutes.Breeds.Low)]
         public async Task<ActionResult<BreedResponse>> Low([FromRoute] int breedId)
         {
-            int userId = 1;
+            int userId = int.Parse(HttpContext.GetUserId());
             BreedResult result = await _agroBarnSupervisor.LowBreedAsync(breedId, userId);
 
             if (!result.Success)

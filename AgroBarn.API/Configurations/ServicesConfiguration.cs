@@ -11,6 +11,13 @@ namespace AgroBarn.API.Configurations
     {
         public static IServiceCollection ConfigureRepositories(this IServiceCollection services)
         {
+            //Identity
+            //People Repository
+            services.AddScoped<IPeopleRepository, PeopleRepository>();
+            //Refresh Token Reposirory
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+
+            //Catalogs
             //Message Repository
             services.AddScoped<IMessageRepository, MessageRepository>();
             //Breed Repository

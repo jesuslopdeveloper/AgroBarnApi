@@ -20,6 +20,7 @@ namespace AgroBarn.Data
         //-------------------------------------------------------------------------------------------------------------------------------------
         //Tables
         //Identity
+        public virtual DbSet<RefreshToken> RefreshToken { get; set; }
         public virtual DbSet<PeopleDto> PeopleDto { get; set; }
 
         //Catalogs
@@ -32,8 +33,8 @@ namespace AgroBarn.Data
             //Enable migration Identity tables
             base.OnModelCreating(modelBuilder);
 
-            //Tables configuration
             //Identity
+            new RefreshTokenConfiguration(modelBuilder.Entity<RefreshToken>());
             new ApplicationRoleConfiguration(modelBuilder.Entity<ApplicationRole>());
             new PeopleConfiguration(modelBuilder.Entity<PeopleDto>());
 

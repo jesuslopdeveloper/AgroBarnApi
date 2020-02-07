@@ -17,8 +17,7 @@ namespace AgroBarn.API.Configurations
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                connection = configuration.GetConnectionString("AgroBarnDbWindows") ?? 
-                            "Server=localhost;Database=AgroBarn;User=sa;Password=siavilla;Trusted_Connection=True;Application Name=AgroBarnApi";
+                connection = configuration.GetConnectionString("AgroBarnDbWindows");
             }
 
             services.AddDbContext<AgroBarnContext>(options => options.UseSqlServer(connection, b => b.MigrationsAssembly("AgroBarn.Data")));

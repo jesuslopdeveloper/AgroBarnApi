@@ -81,5 +81,39 @@
             <param name="message"></param>
             <returns></returns>
         </member>
+        <member name="M:AgroBarn.API.Controllers.V1.Identity.IdentityController.Register(AgroBarn.Domain.ApiModels.V1.Request.UserRegistrationRequest)">
+            <summary>
+            Registra un nuevo usuario
+            </summary>
+            <param name="newUser"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AgroBarn.API.Controllers.V1.Identity.IdentityController.Login(AgroBarn.Domain.ApiModels.V1.Request.UserLoginRequest)">
+            <summary>
+            Autentica un usuario
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AgroBarn.API.Controllers.V1.Identity.IdentityController.Refresh(AgroBarn.Domain.ApiModels.V1.Request.RefreshTokenRequest)">
+            <summary>
+            Actualiza el token cuando éste se ha caducado a traves del Refresh Token
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AgroBarn.API.Controllers.V1.Identity.UserController.GetAllUser">
+            <summary>
+            Obtiene la lista de los usuarios registrados
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AgroBarn.API.Controllers.V1.Identity.UserController.GetUserById(System.Int32)">
+            <summary>
+            Obtiene un usuario a través de su ID
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
     </members>
 </doc>

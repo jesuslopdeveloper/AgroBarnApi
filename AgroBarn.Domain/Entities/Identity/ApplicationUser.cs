@@ -8,5 +8,7 @@ namespace AgroBarn.Domain.Entities
         public int Status { get; set; }
 
         public virtual ICollection<PeopleDto> PeopleDto { get; set; }
+
+        public virtual ICollection<RefreshToken> RefreshToken { get; set; }
     }
 }

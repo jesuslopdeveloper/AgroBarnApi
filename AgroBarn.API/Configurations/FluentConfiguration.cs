@@ -30,6 +30,8 @@ namespace AgroBarn.API.Configurations
             //--------------------------------------------------------------------------------------------------
             //Catalogs
             services.AddTransient<IValidator<BreedRequest>, BreedValidator>();
+            services.AddTransient<IValidator<UserRegistrationRequest>, UserRegistrationValidator>();
+            services.AddTransient<IValidator<UserLoginRequest>, UserLoginValidator>();
 
             return services;
         }

@@ -11,6 +11,11 @@ namespace AgroBarn.Domain.MappingProfiles
     {
         public DomainToResponseProfile()
         {
+            //Identity
+            CreateMap<PeopleDto, UserResult>();
+            CreateMap<UserResult, UserResponse>();
+            CreateMap<ApplicationRole, RoleResponse>();
+
             //Catalog Breed
             CreateMap<BreedRequest, BreedDto>();
             CreateMap<BreedDto, BreedResult>();
@@ -20,7 +25,7 @@ namespace AgroBarn.Domain.MappingProfiles
             CreateMap<MessageRequest, MessageDto>();
             CreateMap<MessageDto, MessageResult>();
             CreateMap<MessageResult, MessageResponse>();
-
+            
             //Others TODO
         }
     }

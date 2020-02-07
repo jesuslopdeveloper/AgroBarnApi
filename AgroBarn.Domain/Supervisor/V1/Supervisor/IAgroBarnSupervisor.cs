@@ -10,6 +10,13 @@ namespace AgroBarn.Domain.Supervisor.V1
     public interface IAgroBarnSupervisor
     {
         //---------------------------------------------------------------------------------------------------------------------------------------------
+        //Identity
+        //Methods Entity User and People
+        Task<List<UserResult>> GetAllUserAsync();
+
+        Task<UserResult> GetUserByIdAsync(int userId);
+
+        //---------------------------------------------------------------------------------------------------------------------------------------------
         //Catalogs
         //Methods Entity Breed
         Task<List<BreedResult>> GetAllBreedAsync();

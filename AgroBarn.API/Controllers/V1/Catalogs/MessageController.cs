@@ -3,15 +3,19 @@ using AgroBarn.Domain.ApiModels.V1.Request;
 using AgroBarn.Domain.ApiModels.V1.Response;
 using AgroBarn.Domain.ApiModels.V1.Result;
 using AgroBarn.API.Contracts.V1;
+using AgroBarn.API.Extensions;
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace AgroBarn.API.Controllers.V1.Catalogs
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class MessageController : ControllerBase
     {
@@ -79,7 +83,7 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
         [HttpPost(ApiRoutes.Messages.Create)]
         public async Task<ActionResult<MessageResponse>> Post([FromBody] MessageRequest newMessage)
         {
-            int userId = 1;
+            int userId = int.Parse(HttpContext.GetUserId());
             MessageResult result = await _agroBarnSupervisor.AddMessageAsync(newMessage, userId);
 
             if (!result.Success)
@@ -101,7 +105,7 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
         [HttpPatch(ApiRoutes.Messages.Update)]
         public async Task<ActionResult<MessageResponse>> Update([FromRoute] int messageId, [FromBody] MessageRequest message)
         {
-            int userId = 1;
+            int userId = int.Parse(HttpContext.GetUserId());
             MessageResult result = await _agroBarnSupervisor.UpdateMessageAsync(message, messageId, userId);
 
             if (!result.Success)
