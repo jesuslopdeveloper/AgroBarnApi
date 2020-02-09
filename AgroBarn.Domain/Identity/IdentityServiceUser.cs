@@ -112,7 +112,7 @@ namespace AgroBarn.Domain.Identity
                 RefreshToken storedRefreshToken = await _refreshTokenRepository.GetByToken(refreshToken);
 
                 if (storedRefreshToken == null)
-                    return await ResponseError("identity-refresh-token-not-found");
+                    return await ResponseError("identity-refresh-token-not-exist");
 
                 if (DateTime.UtcNow > storedRefreshToken.ExpiryDate)
                     return await ResponseError("identity-refresh-token-expired");
@@ -127,7 +127,7 @@ namespace AgroBarn.Domain.Identity
                     return await ResponseError("identity-refresh-token-not-match");
 
                 storedRefreshToken.Used = true;
-                bool updatedRefreshToken = await _refreshTokenRepository.UpdateAsync(storedRefreshToken);
+                await _refreshTokenRepository.UpdateAsync(storedRefreshToken);
 
                 var user = await _userManager.FindByIdAsync(validatedToken.Claims.Single(x => x.Type == "id").Value);
                 return await GenerateAuthenticationResultForUserAsync(user);
@@ -180,15 +180,15 @@ namespace AgroBarn.Domain.Identity
 
             try
             {
-                var principal = tokenHandler.ValidateToken(token, _tokenValidationParameters, out var validatedToken);
+                var tokenValidationParameters = _tokenValidationParameters.Clone();
+                tokenValidationParameters.ValidateLifetime = false;
+                var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var validatedToken);
                 if (!IsJwtWithValidSecurityAlgorithm(validatedToken))
-                {
                     return null;
-                }
-
+                
                 return principal;
             }
-            catch(Exception ex)
+            catch
             {
                 return null;
             }
@@ -225,13 +225,15 @@ namespace AgroBarn.Domain.Identity
                 claims.Add(new Claim(ClaimTypes.Role, userRole));
 
                 var role = await _roleManager.FindByNameAsync(userRole);
-                if (role == null) continue;
+                if (role == null) 
+                    continue;
 
                 var roleClaims = await _roleManager.GetClaimsAsync(role);
 
                 foreach (var roleClaim in roleClaims)
                 {
-                    if (claims.Contains(roleClaim)) continue;
+                    if (claims.Contains(roleClaim)) 
+                        continue;
 
                     claims.Add(roleClaim);
                 }
@@ -243,11 +245,8 @@ namespace AgroBarn.Domain.Identity
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                NotBefore = now,
                 Expires = now.Add(_jwtSettings.TokenLifeTime),
-                SigningCredentials = new SigningCredentials(
-                                        new SymmetricSecurityKey(key),
-                                        SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
             //Create Token

@@ -33,9 +33,9 @@ namespace AgroBarn.API.Configurations
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.Secret)),
                 ValidateIssuer = false,
                 ValidateAudience = false,
-                RequireExpirationTime = true,
-                ValidateLifetime = true
-                //ClockSkew = TimeSpan.Zero
+                RequireExpirationTime = false,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
             };
 
             services.AddSingleton(tokenValidationParameters);
