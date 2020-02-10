@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace AgroBarn.API.Controllers.V1.Catalogs
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, User")]
     [ApiController]
     public class BreedController : ControllerBase
     {
@@ -121,6 +121,7 @@ namespace AgroBarn.API.Controllers.V1.Catalogs
         /// <param name="breedId"></param>
         /// <returns></returns>
         [HttpPatch(ApiRoutes.Breeds.Low)]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<BreedResponse>> Low([FromRoute] int breedId)
         {
             int userId = int.Parse(HttpContext.GetUserId());

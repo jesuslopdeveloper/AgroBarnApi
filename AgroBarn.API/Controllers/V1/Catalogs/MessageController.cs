@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace AgroBarn.API.Controllers.V1.Catalogs
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     [ApiController]
     public class MessageController : ControllerBase
     {
